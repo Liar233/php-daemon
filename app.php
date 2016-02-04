@@ -8,16 +8,6 @@ if( $child_pid ) {
     exit(0);
 }
 
-//	Закрываем порочные связи со стандартным вводом-выводом...
-fclose(STDIN);
-fclose(STDOUT);
-fclose(STDERR);
-
-//	Перенаправляем ввод-вывод туда куда нам надо или не надо...
-$STDIN = fopen('/dev/null', 'r');
-$STDOUT = fopen('/dev/null', 'wb');
-$STDERR = fopen('/dev/null', 'wb');
-
 //	Делаем основным процессом дочерний...
 posix_setsid();
 
@@ -43,5 +33,16 @@ $func = function() use ($example){
 
 //	Собственно создаём демона, соответственно говорим ему куда записывать свой pid...
 $daemon = new Daemon('/tmp/daemon.pid');
+
+//	Закрываем порочные связи со стандартным вводом-выводом...
+fclose(STDIN);
+fclose(STDOUT);
+fclose(STDERR);
+
+//	Перенаправляем ввод-вывод туда куда нам надо или не надо...
+$STDIN = fopen('/dev/null', 'r');
+$STDOUT = fopen('/dev/null', 'wb');
+$STDERR = fopen('/dev/null', 'wb');
+
 //	Запускаем функцию несущую полезную нагрузку...
 $daemon->run($func);
